@@ -1,0 +1,27 @@
+# OS 관련
+.DS_Store
+.localized
+Thumbs.db
+
+# 에디터 관련
+.vscode/
+
+# C/C++ 관련
+*.exe
+*.out
+*.o
+*.obj
+
+# Java 관련
+*.class
+*.jar
+
+# Python 관련
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 기타
+*.log
+.env
