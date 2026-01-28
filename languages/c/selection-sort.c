@@ -30,7 +30,7 @@ int main(){
         if(count == k)
             break;
     }
-    printf("\n%d번의 교환 후 배열: ", k);
+    printf("\n%d번의 교환 후 배열: ", count);
     for(int i = 0; i<n; i++){    
         printf("%d ", players[i]);
     }
