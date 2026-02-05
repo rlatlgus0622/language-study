@@ -5,7 +5,9 @@ class NumberRange:
         if limit < 0:
             raise ValueError("It is not 양수")
         self.limit = limit
-
+    def __repr__(self):
+        return f"{self.__class__.__name__}(limit={self.limit})"
+    
     def __iter__(self):
         pass
 
