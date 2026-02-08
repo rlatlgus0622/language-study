@@ -53,9 +53,42 @@ class SortVisualizer:
         pass
 
 
-    def merge_sort(self):
-        pass
+    def merge_sort(self, arr):
+        if len(arr) <= 1:
+            return arr
+        
+        mid = len(arr) // 2
+        left_group = arr[:mid]
+        right_group = arr[mid:]
 
-sv1 = SortVisualizer([-1, 5, 4, 3, 2, 1, 6])
-sv1.selection_sort()
+        left_sorted = self.merge_sort(left_group)
+        right_sorted = self.merge_sort(right_group)
+
+        return self.merge(left_sorted, right_sorted) 
+    
+    def merge(self, left_arr, right_arr):
+        result = []
+        left_index = 0
+        right_index = 0
+        
+        while left_index < len(left_arr) and right_index < len(right_arr):
+            if left_arr[left_index] > right_arr[right_index]:
+                result.append(right_arr[right_index])
+                right_index += 1
+            else:
+                result.append(left_arr[left_index])
+                left_index += 1
+        
+        result += left_arr[left_index:]
+        result += right_arr[right_index:]
+        return result
+
+    # merge_sort가 재귀 함수이기 때문에 정렬이 모두 완료된 값을 data에 저장하기 위해서 따로 함수 구현   
+    def run_merge_sort(self):
+        self.data = self.merge_sort(self.data)
+
+
+arr = [-1, 5, 4, 3, 2, 1, 6]
+sv1 = SortVisualizer(arr)
+sv1.run_merge_sort()
 print(f"{sv1.original_data}->{sv1.data}, swap count: {sv1.swap_count}")
