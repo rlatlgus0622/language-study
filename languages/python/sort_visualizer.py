@@ -1,17 +1,16 @@
-from copy import copy # 리스트 생성시 얕은 복사 사용
 import time
 
 class SortVisualizer:
     def __init__(self, data):
-        self.original_data = copy(data)
-        self.data = copy(data)
+        self.original_data = data[:]
+        self.data = data[:]
         self.data_len = len(self.original_data)
         self.swap_count = 0 
         print(f"정렬 할 숫자 {len(data)}개 로드 완료.")
 
     
     def reset(self):
-        self.data = copy(self.original_data)
+        self.data = self.original_data[:]
         self.swap_count = 0
     
     def swap(self, i, j): # 깊은복사 위해 인덱스로
