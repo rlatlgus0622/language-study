@@ -20,9 +20,20 @@ def partition(arr, left, right):
     arr[i+1], arr[right] = arr[right], arr[i+1]
     return i+1
 
+def pythonic_quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    
+    pivot = arr[len(arr) // 2] # pivot 가운데 값으로 설정
+
+    lesser_arr = [x for x in arr if x < pivot]
+    equal_arr = [x for x in arr if x == pivot]
+    greater_arr = [x for x in arr if x > pivot]
+
+    return pythonic_quick_sort(lesser_arr) + equal_arr + pythonic_quick_sort(greater_arr)
 
 # main
 original_arr = [6, 5, 3, 1, 8, 7, 2, 4]
-sorted_arr = quick_sort(original_arr[:], 0, len(original_arr)-1)
+sorted_arr = pythonic_quick_sort(original_arr)
 print(f"정렬 전: {original_arr}")
 print(f"정렬 후: {sorted_arr}")
