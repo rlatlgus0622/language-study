@@ -23,10 +23,15 @@ class SortVisualizer:
 
     def bubble_sort(self):
         for i in range(self.data_len - 1):
+            swaped = False
+
             for j in range(self.data_len - i - 1):
                 if self.data[j] > self.data[j+1]:
                     self.swap(j, j+1)
-
+                    swaped = True
+            # 교환이 일어나지 않았다면 정렬완료 -> 종료
+            if not swaped:
+                break
 
     def selection_sort(self):
         for i in range(self.data_len-1):
@@ -34,7 +39,9 @@ class SortVisualizer:
             for j in range(i+1, self.data_len):
                 if self.data[least_index] > self.data[j]: 
                     least_index = j
-            self.swap(i, least_index)
+            # 원래의 i가 최솟값이면 교환 안함
+            if least_index != i:
+                self.swap(i, least_index)
 
 
     def insertion_sort(self):
@@ -46,10 +53,6 @@ class SortVisualizer:
                 self.swap_count += 1
                 j -= 1
             self.data[j+1] = key
-
-
-    def quick_sort(self):
-        pass
 
 
     def merge_sort(self, arr):
@@ -87,7 +90,46 @@ class SortVisualizer:
         self.data = self.merge_sort(self.data)
 
 
+    def quick_sort(self, start, end):
+        # 원소가 1개 이하일 경우 종료
+        if start >= end:
+            return
+
+        # partition 함수를 통해 피벗의 최종 위치 받아옴
+        pivot_index = self.partition(start, end)
+
+        # 피벗을 기준으로 왼쪽과 오른쪽 부분 리스트 재귀 호출
+        self.quick_sort(start, pivot_index - 1)
+        self.quick_sort(pivot_index + 1, end)
+    
+    def partition(self, start, end):
+        # 피벗 설정 (중간값)
+        mid = (start + end) // 2
+        pivot_value = self.data[mid]
+
+        # 피벗 end로 보내서 정렬 과정에서 방해되지 않게 함
+        self.swap(mid, end)
+        
+        # 피벗보다 작은 값들을 앞쪽으로 모으는 과정 (Lomuto Partition Scheme 변형)
+        store_index = start
+        
+        for i in range(start, end): # end는 피벗이 있으므로 제외
+            if self.data[i] < pivot_value:
+                self.swap(store_index, i)
+                store_index += 1
+        
+        # 맨 뒤에 숨겨뒀던 피벗을 자신의 제자리(store_index)로 이동
+        self.swap(store_index, end)
+        
+        # 피벗 최종 위치 반환
+        return store_index
+
+    # 실행용 래퍼 함수 (외부에서 호출할 때 인자 없이 호출하기 위해)
+    def run_quick_sort(self):
+        self.quick_sort(0, self.data_len - 1)
+
+
 arr = [-1, 5, 4, 3, 2, 1, 6]
 sv1 = SortVisualizer(arr)
-sv1.run_merge_sort()
-print(f"{sv1.original_data}->{sv1.data}, swap count: {sv1.swap_count}")
+sv1.run_quick_sort()
+print(f"{sv1.original_data} -> {sv1.data}, swap count: {sv1.swap_count}")
