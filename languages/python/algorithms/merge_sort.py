@@ -1,8 +1,8 @@
 def merge_sort(arr):
-    if len(arr) <= 1:
+    if len(arr) <= 1: # 리스트 안의 요소가 1개 이하면 종료
         return arr
     
-    mid = len(arr) // 2
+    mid = len(arr) // 2 # 중간값 설정
     left_arr = arr[:mid]
     right_arr = arr[mid:]
 
@@ -33,6 +33,9 @@ def merge(left_arr, right_arr):
 
     return result
 
-arr = [-1,5,4,3,2,1]
-print(merge_sort(arr))
+# main
+original_arr = [6, 5, 3, 1, 8, 7, 2, 4]
+sorted_arr = merge_sort(original_arr)
+print(f"정렬 전: {original_arr}")
+print(f"정렬 후: {sorted_arr}")
 

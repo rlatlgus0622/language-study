@@ -9,12 +9,12 @@ def quick_sort(arr, left, right):
 # pivot을 기준으로 작은 수는 왼쪽, 큰수는 오른쪽으로 나누는 함수
 def partition(arr, left, right):
     pivot = arr[right] # 가장 오른쪽에 있는 수를 pivot으로 설정
-    i = left - 1 
-    
+    i = left - 1
+     
     for j in range(left, right):
         if arr[j] < pivot:
             i += 1
-            arr[j], arr[i] = arr[i], arr[j] # pivot보다 작은 수 왼쪽으로
+            arr[j], arr[i] = arr[i], arr[j] # pivot보다 작은 수 왼쪽으로    
 
     # pivot을 작은 그룹 바로 다음으로 위치
     arr[i+1], arr[right] = arr[right], arr[i+1]
