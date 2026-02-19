@@ -12,4 +12,10 @@ print(f"현재 heap: {heap}")
 min = heapq.heappop(heap)
 print(f"꺼낸 최솟값: {min}, 남은 힙: {heap}")
 
-# Max heap 구현 예정
+max_heap = []
+for n in heap:
+    heapq.heappush(max_heap, -n) # heap의 값을 음수로 저장 -> 가장 큰 값이 최솟값이 됨
+
+max = -(heapq.heappop(max_heap))
+    
+print(f"꺼낸 최댓값: {max}, 남은 힙: {max_heap}")
