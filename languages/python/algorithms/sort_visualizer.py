@@ -18,7 +18,16 @@ class SortVisualizer:
         self.swap_count += 1 # 교환, 이동 횟수(비용) 카운트
 
     def check_time(self, sort_func):
-        pass
+        self.reset()
+        func_name = sort_func.__name__
+        print(f"{func_name} 실행")
+        start_time = time.perf_counter()
+        sort_func()
+        end_time = time.perf_counter()
+        result_time = end_time - start_time
+        
+        print(f"{self.original_data} -> {self.data} // 교환횟수: {self.swap_count}, 실행시간: {result_time:.9f}초")
+
     
 
     def bubble_sort(self):
@@ -131,5 +140,8 @@ class SortVisualizer:
 
 arr = [-1, 5, 4, 3, 2, 1, 6]
 sv1 = SortVisualizer(arr)
-sv1.run_quick_sort()
-print(f"{sv1.original_data} -> {sv1.data}, swap count: {sv1.swap_count}")
+sv1.check_time(sv1.bubble_sort) # 괄호 붙이면 함수가 실행되기에, 괄호를 붙이지 않은 함수 객체 자체를 인수로 해야함
+sv1.check_time(sv1.selection_sort)
+sv1.check_time(sv1.insertion_sort)
+sv1.check_time(sv1.run_merge_sort)
+sv1.check_time(sv1.run_quick_sort)
