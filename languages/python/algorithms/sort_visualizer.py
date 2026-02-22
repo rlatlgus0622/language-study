@@ -1,21 +1,31 @@
 import time
+import random
 
 class SortVisualizer:
     def __init__(self, data):
         self.original_data = data[:]
         self.data = data[:]
+        self.result_time = {} # 딕셔너리 활용, 정렬 함수마다 결과값 저장해서 비교
         self.data_len = len(self.original_data)
-        self.swap_count = 0 
+        self.swap_count = 0
+        self.compare_count = 0
         print(f"정렬 할 숫자 {len(data)}개 로드 완료.")
 
     
     def reset(self):
         self.data = self.original_data[:]
         self.swap_count = 0
+        self.compare_count = 0
     
+    # 교환 시행 및 횟수 카운트 함수
     def swap(self, i, j): # 깊은복사 위해 인덱스로
         self.data[i], self.data[j] = self.data[j], self.data[i]
         self.swap_count += 1 # 교환, 이동 횟수(비용) 카운트
+    
+    # 비교 시행 및 횟수 카운트 함수
+    def compare(self, a, b):
+        self.compare_count += 1
+        return a > b
 
     def check_time(self, sort_func):
         self.reset()
@@ -26,7 +36,7 @@ class SortVisualizer:
         end_time = time.perf_counter()
         result_time = end_time - start_time
         
-        print(f"{self.original_data} -> {self.data} // 교환횟수: {self.swap_count}, 실행시간: {result_time:.9f}초")
+        print(f"{self.original_data} -> {self.data}\n// 교환횟수: {self.swap_count}, 비교횟수: {self.compare_count}, 실행시간: {result_time:.9f}초\n")
 
     
 
@@ -35,7 +45,7 @@ class SortVisualizer:
             swaped = False
 
             for j in range(self.data_len - i - 1):
-                if self.data[j] > self.data[j+1]:
+                if self.compare(self.data[j], self.data[j+1]):
                     self.swap(j, j+1)
                     swaped = True
             # 교환이 일어나지 않았다면 정렬완료 -> 종료
@@ -46,7 +56,7 @@ class SortVisualizer:
         for i in range(self.data_len-1):
             least_index = i
             for j in range(i+1, self.data_len):
-                if self.data[least_index] > self.data[j]: 
+                if self.compare(self.data[least_index], self.data[j]): 
                     least_index = j
             # 원래의 i가 최솟값이면 교환 안함
             if least_index != i:
@@ -57,13 +67,13 @@ class SortVisualizer:
         for i in range(1, self.data_len):
             key = self.data[i]
             j = i - 1
-            while j >= 0 and self.data[j] > key:
+            while j >= 0 and self.compare(self.data[j], key):
                 self.data[j+1] = self.data[j]
                 self.swap_count += 1
                 j -= 1
             self.data[j+1] = key
 
-
+    # 병합 정렬
     def merge_sort(self, arr):
         if len(arr) <= 1:
             return arr
@@ -83,7 +93,7 @@ class SortVisualizer:
         right_index = 0
         
         while left_index < len(left_arr) and right_index < len(right_arr):
-            if left_arr[left_index] > right_arr[right_index]:
+            if self.compare(left_arr[left_index], right_arr[right_index]):
                 result.append(right_arr[right_index])
                 right_index += 1
             else:
@@ -99,6 +109,7 @@ class SortVisualizer:
         self.data = self.merge_sort(self.data)
 
 
+    # 퀵 정렬
     def quick_sort(self, start, end):
         # 원소가 1개 이하일 경우 종료
         if start >= end:
@@ -123,7 +134,7 @@ class SortVisualizer:
         store_index = start
         
         for i in range(start, end): # end는 피벗이 있으므로 제외
-            if self.data[i] < pivot_value:
+            if self.compare(pivot_value, self.data[i]):
                 self.swap(store_index, i)
                 store_index += 1
         
@@ -138,7 +149,7 @@ class SortVisualizer:
         self.quick_sort(0, self.data_len - 1)
 
 
-arr = [-1, 5, 4, 3, 2, 1, 6]
+arr = [random.randint(-9, 9) for i in range(100)]
 sv1 = SortVisualizer(arr)
 sv1.check_time(sv1.bubble_sort) # 괄호 붙이면 함수가 실행되기에, 괄호를 붙이지 않은 함수 객체 자체를 인수로 해야함
 sv1.check_time(sv1.selection_sort)
