@@ -9,7 +9,7 @@ class SortVisualizer:
         self.data_len = len(self.original_data)
         self.swap_count = 0
         self.compare_count = 0
-        print(f"정렬 할 숫자 {len(data)}개 로드 완료.")
+        print(f"정렬 할 숫자 {len(data)}개 로드 완료.\n")
 
     
     def reset(self):
@@ -27,6 +27,7 @@ class SortVisualizer:
         self.compare_count += 1
         return a > b
 
+
     def check_time(self, sort_func):
         self.reset()
         func_name = sort_func.__name__
@@ -35,11 +36,19 @@ class SortVisualizer:
         sort_func()
         end_time = time.perf_counter()
         result_time = end_time - start_time
-        
+        self.result_time[func_name] = result_time
         print(f"{self.original_data} -> {self.data}\n// 교환횟수: {self.swap_count}, 비교횟수: {self.compare_count}, 실행시간: {result_time:.9f}초\n")
-
     
 
+    def compare_time(self):
+        sorted_list = sorted(self.result_time.items(), key= lambda item: item[1]) # .items()로 튜플 반환, key와 value로 구성된 item 튜플 중 인덱스 1 -> value 기준으로 정렬해라
+        print(f"\n=== 랭킹 ==========================\n")
+        for rank, data in enumerate(sorted_list, 1): # 1부터 시작하라는 옵션
+            func_name, result_time = data
+            print(f"{rank}위: {func_name:<20} {result_time:.9f}초")
+    
+    
+    # 버블 정렬
     def bubble_sort(self):
         for i in range(self.data_len - 1):
             swaped = False
@@ -52,6 +61,8 @@ class SortVisualizer:
             if not swaped:
                 break
 
+
+    # 선택 정렬
     def selection_sort(self):
         for i in range(self.data_len-1):
             least_index = i
@@ -63,6 +74,7 @@ class SortVisualizer:
                 self.swap(i, least_index)
 
 
+    # 삽입 정렬
     def insertion_sort(self):
         for i in range(1, self.data_len):
             key = self.data[i]
@@ -156,3 +168,4 @@ sv1.check_time(sv1.selection_sort)
 sv1.check_time(sv1.insertion_sort)
 sv1.check_time(sv1.run_merge_sort)
 sv1.check_time(sv1.run_quick_sort)
+sv1.compare_time()
