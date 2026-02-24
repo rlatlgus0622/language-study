@@ -47,7 +47,7 @@ class SortVisualizer:
             func_name, result_time = data
             print(f"{rank}위: {func_name:<20} {result_time:.9f}초")
     
-    
+
     # 버블 정렬
     def bubble_sort(self):
         for i in range(self.data_len - 1):
@@ -81,7 +81,6 @@ class SortVisualizer:
             j = i - 1
             while j >= 0 and self.compare(self.data[j], key):
                 self.data[j+1] = self.data[j]
-                self.swap_count += 1
                 j -= 1
             self.data[j+1] = key
 
@@ -161,11 +160,28 @@ class SortVisualizer:
         self.quick_sort(0, self.data_len - 1)
 
 
-arr = [random.randint(-9, 9) for i in range(100)]
-sv1 = SortVisualizer(arr)
-sv1.check_time(sv1.bubble_sort) # 괄호 붙이면 함수가 실행되기에, 괄호를 붙이지 않은 함수 객체 자체를 인수로 해야함
-sv1.check_time(sv1.selection_sort)
-sv1.check_time(sv1.insertion_sort)
-sv1.check_time(sv1.run_merge_sort)
-sv1.check_time(sv1.run_quick_sort)
-sv1.compare_time()
+# 총 5번의 테스트 케이스 실행
+TEST_CASE_COUNT = 5
+DATA_SIZE = 1000  # 데이터 개수 (너무 적으면 시간이 0.0초로 나와서 비교가 안 될 수 있음)
+
+print(f"총 {TEST_CASE_COUNT}개의 서로 다른 랜덤 배열로 성능 테스트를 시작합니다.\n")
+
+for i in range(1, TEST_CASE_COUNT + 1):
+    print(f"\n{'='*20} [ {i}번째 테스트 케이스 ] {'='*20}")
+        
+    # 매번 새로운 랜덤 데이터 생성 (-1000 ~ 1000 사이의 숫자)
+    random_data = [random.randint(-1000, 1000) for _ in range(DATA_SIZE)]
+        
+    # 객체 생성 (새로운 데이터로 초기화)
+    sv = SortVisualizer(random_data)
+        
+        # 정렬 실행
+        # 주의: 함수를 실행하는 것이 아니라 함수 객체 자체를 넘겨야 함
+    sv.check_time(sv.bubble_sort)
+    sv.check_time(sv.selection_sort)
+    sv.check_time(sv.insertion_sort)
+    sv.check_time(sv.run_merge_sort)
+    sv.check_time(sv.run_quick_sort)
+        
+        # 해당 케이스의 랭킹 출력
+    sv.compare_time()
