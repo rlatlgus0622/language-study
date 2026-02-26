@@ -12,6 +12,18 @@ class LinkedList:
         new_node.next = self.head
         self.head = new_node
 
+    def append(self, data):
+        new_node = Node(data)
+        if not self.head:
+            self.head = new_node
+            return
+        
+        current = self.head
+        while current.next:
+            current = current.next
+        current.next = new_node
+
+
     def print_list(self):
         current = self.head
         while current:
@@ -21,8 +33,11 @@ class LinkedList:
 
 n1 = LinkedList()
 n1.insert_at_head(1)
-n1.insert_at_head(2)
+n1.append(2)
 n1.insert_at_head(3)
+n1.append(4)
+n1.insert_at_head(5)
+
 n1.print_list()
 
             
