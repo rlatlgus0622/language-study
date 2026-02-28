@@ -23,7 +23,14 @@ class LinkedList:
             current = current.next
         current.next = new_node
 
-
+    def size(self):
+        count = 0
+        current = self.head
+        while current:
+            count += 1
+            current = current.next
+        return count
+    
     def print_list(self):
         current = self.head
         while current:
@@ -39,5 +46,5 @@ n1.append(4)
 n1.insert_at_head(5)
 
 n1.print_list()
-
+print(f"Size: {n1.size()}")
             
