@@ -3,15 +3,17 @@ import random
 
 class SortVisualizer:
     def __init__(self, data):
-        self.original_data = data[:]
-        self.data = data[:]
+        self.data_len = len(self.original_data) # 정렬할 data의 길이
+        self.original_data = data[:] # 원본 유지를 위한 얕은 복사
+        self.data = data[:] 
+
         self.result_time = {} # 딕셔너리 활용, 정렬 함수마다 결과값 저장해서 비교
-        self.data_len = len(self.original_data)
-        self.swap_count = 0
-        self.compare_count = 0
+        self.swap_count = 0 # 교환 횟수 초기화
+        self.compare_count = 0 # 비교 횟수 초기화
         print(f"정렬 할 숫자 {len(data)}개 로드 완료.\n")
 
     
+    # 정렬할 data 및 교환횟수, 비교횟수 초기화하는 함수
     def reset(self):
         self.data = self.original_data[:]
         self.swap_count = 0
@@ -28,6 +30,7 @@ class SortVisualizer:
         return a > b
 
 
+    # 각각의 정렬함수를 입력받아 실행하고 실행 시간, 교환횟수, 비교횟수를 출력하는 함수
     def check_time(self, sort_func):
         self.reset()
         func_name = sort_func.__name__
@@ -40,6 +43,7 @@ class SortVisualizer:
         print(f"{self.original_data} -> {self.data}\n// 교환횟수: {self.swap_count}, 비교횟수: {self.compare_count}, 실행시간: {result_time:.9f}초\n")
     
 
+    # 각각의 정렬 함수를 비교해 랭킹 출력하는 함수
     def compare_time(self):
         sorted_list = sorted(self.result_time.items(), key= lambda item: item[1]) # .items()로 튜플 반환, key와 value로 구성된 item 튜플 중 인덱스 1 -> value 기준으로 정렬해라
         print(f"\n=== 랭킹 ==========================\n")
@@ -89,21 +93,25 @@ class SortVisualizer:
         if len(arr) <= 1:
             return arr
         
+        # 중앙값 설정
         mid = len(arr) // 2
         left_group = arr[:mid]
         right_group = arr[mid:]
 
+        # 재귀함수 활용해 각 그룹 정렬 (모두 정렬될 때까지 재귀)
         left_sorted = self.merge_sort(left_group)
         right_sorted = self.merge_sort(right_group)
 
-        return self.merge(left_sorted, right_sorted) 
+        return self.merge(left_sorted, right_sorted) # 최종 정렬된 두 그룹 반환
     
+    # 병합 메소드 (두 그룹의 요소 비교후 새로운 배열에 크기 순서대로 병합)
     def merge(self, left_arr, right_arr):
         result = []
         left_index = 0
         right_index = 0
         
-        while left_index < len(left_arr) and right_index < len(right_arr):
+        # 두 요소 비교해서 작은 수 병합 후 해당 인덱스 +1
+        while left_index < len(left_arr) and right_index < len(right_arr): # 두 그룹 중 하나라도 병합이 완료되면 종료
             if self.compare(left_arr[left_index], right_arr[right_index]):
                 result.append(right_arr[right_index])
                 right_index += 1
@@ -111,6 +119,8 @@ class SortVisualizer:
                 result.append(left_arr[left_index])
                 left_index += 1
         
+        # 만약 병합이 되지 않고 요소가 남아 있더라도 그 그룹은 이미 정렬이 되어 있기에 result에 그대로 병합
+        # 파이썬에서 빈 배열을 병합해도 문제 없음
         result += left_arr[left_index:]
         result += right_arr[right_index:]
         return result
