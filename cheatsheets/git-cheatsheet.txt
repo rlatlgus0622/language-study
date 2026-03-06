@@ -15,7 +15,9 @@ git config : Git 환경 설정 조회 및 변경
 2. 시작하기 (Setup)
  
 git init : 현재 디렉토리를 Git 저장소로 초기화 (.git 폴더 생성)
+
 git clone [URL] : 원격 저장소의 내용을 내 컴퓨터로 복제
+    * mkdir (폴더 생성) -> git init (초기화) -> git remote add (주소 연결) -> git fetch + git checkout (데이터 통째로 받아옴 + 파일 펼치기)
 * git clone [URL] . : (꿀팁) 현재 폴더(빈 폴더일 때)에 하위 폴더를 만들지 않고 파일들을 바로 쫙 깔아줌
 * git clone -b [브랜치명] [URL] : 특정 브랜치만 골라서 클론
 
@@ -102,6 +104,9 @@ git remote : 원격 저장소 연결 관리
 * git remote add origin [URL] : 원격 저장소 주소 추가
 * git remote remove origin : 기존 연결 삭제
 * git remote set-url origin [새URL] : 원격 저장소 주소 변경
+    https(GCM), SSH 전환 방법 
+        * GCM -> SSH: git remote set-url origin git@github.com:깃헙아이디/프로젝트명.git
+        * SSH -> GCM: git remote set-url origin https://github.com/깃헙아이디/프로젝트명.git
 
 git push : 로컬의 변경 사항을 원격으로 업로드
 * git push -u origin [브랜치명] : 업스트림(추적)을 설정하며 푸시 (최초 1회 필수)

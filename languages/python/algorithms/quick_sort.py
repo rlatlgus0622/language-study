@@ -10,7 +10,7 @@ def quick_sort(arr, left, right):
 def partition(arr, left, right):
     pivot = arr[right] # 가장 오른쪽에 있는 수를 pivot으로 설정
     i = left - 1
-     
+    
     for j in range(left, right):
         if arr[j] < pivot:
             i += 1
