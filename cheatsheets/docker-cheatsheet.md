@@ -1,0 +1,160 @@
+# Docker 명령어 정리
+
+## 1. 기본 개념 (Foreground vs Background)
+
+**Foreground (포그라운드)**
+- 터미널에 컨테이너의 실행 로그가 직접 출력되며, 해당 터미널이 컨테이너의 프로세스에 묶여 조작이 불가능한 상태
+- `Ctrl + C`를 누르면 컨테이너가 종료
+
+**Background (백그라운드 / Detached Mode)**
+- 컨테이너가 컴퓨터(서버)의 백그라운드 프로세스로 실행
+- 터미널에 로그가 보이지 않으며, 즉시 터미널 조작이 가능
+- 주로 서버 배포 시 사용하며 `-d` 옵션을 사용
+
+---
+
+## 2. 이미지 관리 (Image)
+
+> 이미지 = 컨테이너 생성을 위한 설계도
+
+```bash
+docker search [검색어]            # Docker Hub에서 이미지 검색
+
+docker pull [이미지명]             # 이미지 다운로드 (태그 생략 시 latest)
+docker pull [이미지명]:[태그]      # 특정 버전 다운로드 (예: python:3.9)
+
+docker image ls                   # 다운로드된 이미지 목록 조회
+docker images                     # 위와 동일
+
+docker image rm [이미지 ID/이름]    # 이미지 삭제
+docker image rm -f [이미지 ID/이름] # 이미지 강제 삭제
+docker image prune                 # Dangling 이미지 일괄 삭제
+```
+
+**전체 삭제**
+```bash
+docker image rm $(docker images -q)     # 사용 중이지 않은 모든 이미지 삭제
+docker image rm -f $(docker images -q)  # 모든 이미지 강제 삭제 (주의!)
+```
+
+---
+
+## 3. 컨테이너 생성 및 실행 (Run)
+
+> `docker run` = `docker pull` + `create` + `start`
+
+```bash
+docker run [이미지]     # 컨테이너 생성 및 실행 (기본: Foreground)
+docker create [이미지]  # 컨테이너 생성만 하고 실행은 하지 않음
+```
+
+### 자주 쓰는 `docker run` 옵션
+
+| 옵션 | 설명 |
+|------|------|
+| `-d` | 백그라운드 모드로 실행 (Detached) |
+| `-p [호스트포트]:[컨테이너포트]` | 포트 포워딩 |
+| `--name [이름]` | 컨테이너에 이름 부여 |
+| `-e [변수명]=[값]` | 환경변수 설정 |
+| `-v [호스트경로]:[컨테이너경로]` | 볼륨 마운트 |
+| `--rm` | 컨테이너 종료 시 자동 삭제 |
+| `-it` | 터미널 입력을 위한 옵션 |
+
+**예시**
+```bash
+docker run -d -p 8080:80 --name my-web-server nginx
+# nginx 이미지를 백그라운드에서, 내 컴퓨터 8080포트로 연결하고, 이름은 my-web-server로 실행
+```
+
+---
+
+## 4. 컨테이너 조회 및 로그 (Monitoring)
+
+```bash
+docker ps              # 현재 실행 중인 컨테이너 목록 조회
+docker ps -a           # 종료된 것 포함 모든 컨테이너 목록 조회
+
+docker logs [컨테이너]               # 로그 전체 출력
+docker logs --tail [숫자] [컨테이너] # 마지막 N줄 로그 출력
+docker logs -f [컨테이너]            # 로그 실시간 추적 (디버깅 시 필수)
+```
+
+---
+
+## 5. 컨테이너 제어 및 접속 (Control & Exec)
+
+```bash
+docker stop [컨테이너]                # 컨테이너 정상 종료 (작업 마무리 후 종료)
+docker kill [컨테이너]                # 컨테이너 즉시 강제 종료
+docker start [컨테이너]               # 종료된 컨테이너 재실행 (기본: Background)
+docker restart [컨테이너]             # 재부팅 (Stop → Start)
+docker exec -it [컨테이너] /bin/bash  # 컨테이너 내부 쉘로 접속 (중요)
+```
+
+---
+
+## 6. 컨테이너 삭제 (Delete)
+
+```bash
+docker rm [컨테이너]     # 종료된 컨테이너 삭제 (실행 중이면 에러)
+docker rm -f [컨테이너]  # 실행 중인 컨테이너 강제 삭제
+docker container prune   # 종료된(Stopped) 모든 컨테이너 일괄 삭제
+```
+
+**전체 삭제**
+```bash
+docker rm $(docker ps -qa)                                   # 모든 컨테이너 삭제
+docker stop $(docker ps -q) && docker rm $(docker ps -qa)    # 전부 멈추고 삭제
+```
+
+---
+
+## 7. 시스템 청소 (System Prune)
+
+```bash
+docker system prune -a
+# 중지된 컨테이너, 안 쓰는 네트워크, Dangling 이미지 등 일괄 삭제 (매우 강력)
+```
+
+---
+
+## 워크플로우 요약
+
+```bash
+# 1. 이미지 준비
+docker pull [이미지]
+
+# 2. 옵션 넣어 실행
+docker run -d --name [이름] ...
+
+# 3. 잘 떴는지 확인
+docker ps
+
+# 4. 에러 없는지 로그 확인
+docker logs -f [컨테이너]
+
+# 5. 필요 시 내부 접속
+docker exec -it [컨테이너] /bin/bash
+
+# 6. 사용 후 정리
+docker stop [컨테이너] && docker rm [컨테이너]
+```
+
+---
+
+## 추가: Docker로 MySQL 실행
+
+```bash
+docker run -d \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=1234 \
+  -v ~/Desktop/docker-mysql/mysql-data:/var/lib/mysql \
+  mysql
+```
+
+- `-e` : 환경변수 설정 → 패스워드 설정
+- `-v` : 볼륨 마운트 → `로컬 저장소 경로:mysql 경로`
+
+> **주의사항**
+> - 실행 시 로컬 저장소 경로에 있는 파일을 mysql로 복사(덮어쓰기)함
+> - 로컬 저장소에 비밀번호가 이미 저장되어 있다면, 나중에 다른 비밀번호로 실행해도 적용되지 않음
