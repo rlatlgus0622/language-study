@@ -81,7 +81,7 @@ def key_max(dictionary: Dict[str, int]) -> Optional[str]:
     # TODO: 여기를 구현
     # ====================
     max_key = None
-    max_value = 0 # args가 1이상, 100이하이기 때문에 0으로 설정함
+    max_value = 0 # args가 1이상, 100이하이기 때문에 0으로 설정함, 다른 경우에는 음의 무한대 사용: float('-inf')
     for key, value in dictionary.items():
         if value > max_value:
             max_key = key
@@ -124,8 +124,6 @@ def fizzbuzz(value: int) -> List[str]:
     results: List[str] = []
     # TODO: 여기를 구현
     # ====================
-    if not (value >= 15 and value <= 100):
-        raise ValueError("value는 15 이상, 100 이하의 정수여야 함")
     
     for n in range(1, value+1):
         if n % 3 == 0 and n % 5 == 0:
@@ -161,11 +159,13 @@ def is_prime(value: int) -> Optional[bool]:
         result = False
     else:
         result = True
-        for n in range(3, int(value**0.5)+1, 2):
-            if value % n == 0: 
+        # value**0.5 쓰는 이유: 합성수 value = a × b 일 때, a와 b 중 하나는 반드시 value**0.5 이하 
+        # value가 소수인 경우 루프에서 약수를 못 찾아서 result=True 그대로 반환
+        for n in range(3, int(value**0.5)+1, 2): 
+            if value % n == 0:
                 result = False
                 break
-    # ====================
+    # ======================
     return result
 
 
@@ -181,8 +181,18 @@ def generate_primes(value: int) -> Generator[int, None, None]:
     """
     # TODO: 여기를 구현
     # ====================
-    for i in range(2, value + 1):
-        if is_prime(i):
+    # 에라토스테네스의 체 활용 필요 (2부터 시작, 소수의 배수를 지우는 방식)
+    sieve = [True] * (value + 1) # 크기가 value+1인 bool 배열 생성, 모든값을 True(소수)로 가정
+    sieve[0] = sieve[1] = False # 0과 1은 소수가 아님
+    
+    for i in range(2, int(value**0.5)+1): 
+        if sieve[i]:
+            for j in range(i*i, value+1, i): # i*i 이전의 값들은 이미 처리됨, i*i부터 i의 배수 제거
+                sieve[j] = False
+
+    # 2부터 끝까지 True인 인덱스만 yield
+    for i in range(2, value+1):
+        if sieve[i]:
             yield i
     # ====================
 
