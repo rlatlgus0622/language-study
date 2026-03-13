@@ -104,6 +104,33 @@
 
 ---
 
+## 8. Context 관리 (Context)
+
+> Context = Docker 명령어가 어떤 Docker 엔진을 바라볼지 결정하는 설정
+
+`docker context ls` : 현재 등록된 context 목록 조회 (`*` 표시가 현재 활성화된 context)
+
+`docker context use [context명]` : 사용할 context 전환
+
+### 주요 context 이름
+
+| Context명 | 설명 |
+|---|---|
+| `orbstack` | OrbStack 엔진 사용 |
+| `desktop-linux` | Docker Desktop 엔진 사용 |
+| `default` | 기본 context |
+
+**예시**
+- `docker context use orbstack` : OrbStack으로 전환 → 이후 모든 명령어는 OrbStack에 적용
+- `docker context use desktop-linux` : Docker Desktop으로 전환
+
+***주의사항***
+- Docker Desktop과 OrbStack을 동시에 실행하면 충돌 가능
+- `docker run`으로 생성되는 컨테이너와 볼륨은 현재 활성화된 context의 저장공간에 저장됨
+- 명령어 실행 전 `docker context ls`로 현재 context 확인하는 습관 필요
+
+---
+
 ## 워크플로우 요약
 
 1. `docker pull` : 이미지 준비
